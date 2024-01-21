@@ -1,0 +1,9 @@
+opencv-python
+numpy
+flask
+tensorflow
+flask_cors
+numpy
+matplotlib
+keras
+tensorflow_intel
