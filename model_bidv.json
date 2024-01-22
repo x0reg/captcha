@@ -1,15 +1,17 @@
 {
     "class_name": "Functional",
     "config": {
-        "name": "model_1",
+        "name": "model",
+        "trainable": true,
         "layers": [
             {
+                "module": "keras.layers",
                 "class_name": "InputLayer",
                 "config": {
                     "batch_input_shape": [
                         null,
-                        320,
-                        80,
+                        200,
+                        50,
                         1
                     ],
                     "dtype": "float32",
@@ -17,10 +19,12 @@
                     "ragged": false,
                     "name": "image"
                 },
+                "registered_name": null,
                 "name": "image",
                 "inbound_nodes": []
             },
             {
+                "module": "keras.layers",
                 "class_name": "Conv2D",
                 "config": {
                     "name": "Conv1",
@@ -45,20 +49,33 @@
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
+                        "module": "keras.initializers",
                         "class_name": "HeNormal",
                         "config": {
                             "seed": null
-                        }
+                        },
+                        "registered_name": null
                     },
                     "bias_initializer": {
+                        "module": "keras.initializers",
                         "class_name": "Zeros",
-                        "config": {}
+                        "config": {},
+                        "registered_name": null
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
                     "activity_regularizer": null,
                     "kernel_constraint": null,
                     "bias_constraint": null
+                },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        200,
+                        50,
+                        1
+                    ]
                 },
                 "name": "Conv1",
                 "inbound_nodes": [
@@ -73,6 +90,7 @@
                 ]
             },
             {
+                "module": "keras.layers",
                 "class_name": "MaxPooling2D",
                 "config": {
                     "name": "pool1",
@@ -89,6 +107,15 @@
                     ],
                     "data_format": "channels_last"
                 },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        200,
+                        50,
+                        32
+                    ]
+                },
                 "name": "pool1",
                 "inbound_nodes": [
                     [
@@ -102,6 +129,7 @@
                 ]
             },
             {
+                "module": "keras.layers",
                 "class_name": "Conv2D",
                 "config": {
                     "name": "Conv2",
@@ -126,20 +154,33 @@
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
+                        "module": "keras.initializers",
                         "class_name": "HeNormal",
                         "config": {
                             "seed": null
-                        }
+                        },
+                        "registered_name": null
                     },
                     "bias_initializer": {
+                        "module": "keras.initializers",
                         "class_name": "Zeros",
-                        "config": {}
+                        "config": {},
+                        "registered_name": null
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
                     "activity_regularizer": null,
                     "kernel_constraint": null,
                     "bias_constraint": null
+                },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        100,
+                        25,
+                        32
+                    ]
                 },
                 "name": "Conv2",
                 "inbound_nodes": [
@@ -154,6 +195,7 @@
                 ]
             },
             {
+                "module": "keras.layers",
                 "class_name": "MaxPooling2D",
                 "config": {
                     "name": "pool2",
@@ -170,6 +212,15 @@
                     ],
                     "data_format": "channels_last"
                 },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        100,
+                        25,
+                        64
+                    ]
+                },
                 "name": "pool2",
                 "inbound_nodes": [
                     [
@@ -183,14 +234,24 @@
                 ]
             },
             {
+                "module": "keras.layers",
                 "class_name": "Reshape",
                 "config": {
                     "name": "reshape",
                     "trainable": true,
                     "dtype": "float32",
                     "target_shape": [
-                        40,
-                        2560
+                        50,
+                        768
+                    ]
+                },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        50,
+                        12,
+                        64
                     ]
                 },
                 "name": "reshape",
@@ -206,6 +267,7 @@
                 ]
             },
             {
+                "module": "keras.layers",
                 "class_name": "Dense",
                 "config": {
                     "name": "dense1",
@@ -215,20 +277,32 @@
                     "activation": "relu",
                     "use_bias": true,
                     "kernel_initializer": {
+                        "module": "keras.initializers",
                         "class_name": "GlorotUniform",
                         "config": {
                             "seed": null
-                        }
+                        },
+                        "registered_name": null
                     },
                     "bias_initializer": {
+                        "module": "keras.initializers",
                         "class_name": "Zeros",
-                        "config": {}
+                        "config": {},
+                        "registered_name": null
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
                     "activity_regularizer": null,
                     "kernel_constraint": null,
                     "bias_constraint": null
+                },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        50,
+                        768
+                    ]
                 },
                 "name": "dense1",
                 "inbound_nodes": [
@@ -243,6 +317,7 @@
                 ]
             },
             {
+                "module": "keras.layers",
                 "class_name": "Dropout",
                 "config": {
                     "name": "dropout",
@@ -251,6 +326,14 @@
                     "rate": 0.2,
                     "noise_shape": null,
                     "seed": null
+                },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        50,
+                        64
+                    ]
                 },
                 "name": "dropout",
                 "inbound_nodes": [
@@ -265,12 +348,14 @@
                 ]
             },
             {
+                "module": "keras.layers",
                 "class_name": "Bidirectional",
                 "config": {
                     "name": "bidirectional",
                     "trainable": true,
                     "dtype": "float32",
                     "layer": {
+                        "module": "keras.layers",
                         "class_name": "LSTM",
                         "config": {
                             "name": "lstm",
@@ -282,29 +367,32 @@
                             "stateful": false,
                             "unroll": false,
                             "time_major": false,
-                            "units": 256,
+                            "units": 128,
                             "activation": "tanh",
                             "recurrent_activation": "sigmoid",
                             "use_bias": true,
                             "kernel_initializer": {
+                                "module": "keras.initializers",
                                 "class_name": "GlorotUniform",
                                 "config": {
                                     "seed": null
                                 },
-                                "shared_object_id": 14
+                                "registered_name": null
                             },
                             "recurrent_initializer": {
+                                "module": "keras.initializers",
                                 "class_name": "Orthogonal",
                                 "config": {
                                     "gain": 1.0,
                                     "seed": null
                                 },
-                                "shared_object_id": 15
+                                "registered_name": null
                             },
                             "bias_initializer": {
+                                "module": "keras.initializers",
                                 "class_name": "Zeros",
                                 "config": {},
-                                "shared_object_id": 16
+                                "registered_name": null
                             },
                             "unit_forget_bias": true,
                             "kernel_regularizer": null,
@@ -317,9 +405,18 @@
                             "dropout": 0.25,
                             "recurrent_dropout": 0.0,
                             "implementation": 2
-                        }
+                        },
+                        "registered_name": null
                     },
                     "merge_mode": "concat"
+                },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        50,
+                        64
+                    ]
                 },
                 "name": "bidirectional",
                 "inbound_nodes": [
@@ -334,12 +431,14 @@
                 ]
             },
             {
+                "module": "keras.layers",
                 "class_name": "Bidirectional",
                 "config": {
                     "name": "bidirectional_1",
                     "trainable": true,
                     "dtype": "float32",
                     "layer": {
+                        "module": "keras.layers",
                         "class_name": "LSTM",
                         "config": {
                             "name": "lstm_1",
@@ -351,29 +450,32 @@
                             "stateful": false,
                             "unroll": false,
                             "time_major": false,
-                            "units": 128,
+                            "units": 64,
                             "activation": "tanh",
                             "recurrent_activation": "sigmoid",
                             "use_bias": true,
                             "kernel_initializer": {
+                                "module": "keras.initializers",
                                 "class_name": "GlorotUniform",
                                 "config": {
                                     "seed": null
                                 },
-                                "shared_object_id": 20
+                                "registered_name": null
                             },
                             "recurrent_initializer": {
+                                "module": "keras.initializers",
                                 "class_name": "Orthogonal",
                                 "config": {
                                     "gain": 1.0,
                                     "seed": null
                                 },
-                                "shared_object_id": 21
+                                "registered_name": null
                             },
                             "bias_initializer": {
+                                "module": "keras.initializers",
                                 "class_name": "Zeros",
                                 "config": {},
-                                "shared_object_id": 22
+                                "registered_name": null
                             },
                             "unit_forget_bias": true,
                             "kernel_regularizer": null,
@@ -386,9 +488,18 @@
                             "dropout": 0.25,
                             "recurrent_dropout": 0.0,
                             "implementation": 2
-                        }
+                        },
+                        "registered_name": null
                     },
                     "merge_mode": "concat"
+                },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        50,
+                        256
+                    ]
                 },
                 "name": "bidirectional_1",
                 "inbound_nodes": [
@@ -403,92 +514,28 @@
                 ]
             },
             {
-                "class_name": "Bidirectional",
-                "config": {
-                    "name": "bidirectional_2",
-                    "trainable": true,
-                    "dtype": "float32",
-                    "layer": {
-                        "class_name": "LSTM",
-                        "config": {
-                            "name": "lstm_2",
-                            "trainable": true,
-                            "dtype": "float32",
-                            "return_sequences": true,
-                            "return_state": false,
-                            "go_backwards": false,
-                            "stateful": false,
-                            "unroll": false,
-                            "time_major": false,
-                            "units": 64,
-                            "activation": "tanh",
-                            "recurrent_activation": "sigmoid",
-                            "use_bias": true,
-                            "kernel_initializer": {
-                                "class_name": "GlorotUniform",
-                                "config": {
-                                    "seed": null
-                                },
-                                "shared_object_id": 26
-                            },
-                            "recurrent_initializer": {
-                                "class_name": "Orthogonal",
-                                "config": {
-                                    "gain": 1.0,
-                                    "seed": null
-                                },
-                                "shared_object_id": 27
-                            },
-                            "bias_initializer": {
-                                "class_name": "Zeros",
-                                "config": {},
-                                "shared_object_id": 28
-                            },
-                            "unit_forget_bias": true,
-                            "kernel_regularizer": null,
-                            "recurrent_regularizer": null,
-                            "bias_regularizer": null,
-                            "activity_regularizer": null,
-                            "kernel_constraint": null,
-                            "recurrent_constraint": null,
-                            "bias_constraint": null,
-                            "dropout": 0.25,
-                            "recurrent_dropout": 0.0,
-                            "implementation": 2
-                        }
-                    },
-                    "merge_mode": "concat"
-                },
-                "name": "bidirectional_2",
-                "inbound_nodes": [
-                    [
-                        [
-                            "bidirectional_1",
-                            0,
-                            0,
-                            {}
-                        ]
-                    ]
-                ]
-            },
-            {
+                "module": "keras.layers",
                 "class_name": "Dense",
                 "config": {
                     "name": "dense2",
                     "trainable": true,
                     "dtype": "float32",
-                    "units": 44,
+                    "units": 47,
                     "activation": "softmax",
                     "use_bias": true,
                     "kernel_initializer": {
+                        "module": "keras.initializers",
                         "class_name": "GlorotUniform",
                         "config": {
                             "seed": null
-                        }
+                        },
+                        "registered_name": null
                     },
                     "bias_initializer": {
+                        "module": "keras.initializers",
                         "class_name": "Zeros",
-                        "config": {}
+                        "config": {},
+                        "registered_name": null
                     },
                     "kernel_regularizer": null,
                     "bias_regularizer": null,
@@ -496,11 +543,19 @@
                     "kernel_constraint": null,
                     "bias_constraint": null
                 },
+                "registered_name": null,
+                "build_config": {
+                    "input_shape": [
+                        null,
+                        50,
+                        128
+                    ]
+                },
                 "name": "dense2",
                 "inbound_nodes": [
                     [
                         [
-                            "bidirectional_2",
+                            "bidirectional_1",
                             0,
                             0,
                             {}
@@ -524,6 +579,6 @@
             ]
         ]
     },
-    "keras_version": "2.8.0",
+    "keras_version": "2.14.0",
     "backend": "tensorflow"
 }

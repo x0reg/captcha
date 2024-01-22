@@ -42,8 +42,7 @@ char_to_num_bidv = layers.StringLookup(vocabulary=list(characters_bidv), mask_to
 num_to_char_bidv = layers.StringLookup(
     vocabulary=char_to_num_bidv.get_vocabulary(), mask_token=None, invert=True
 ) 
-prediction_model_bidv = load_model("model.keras") 
-prediction_model_bidv.load_weights("weights.keras")  
+
 #end BIDV
 
 
@@ -98,6 +97,12 @@ loaded_model_json = json_file_mb.read()
 json_file_mb.close()
 loaded_model_mb = model_from_json(loaded_model_json)
 loaded_model_mb.load_weights("model_mb.h5")
+#load mode bidv 
+with open("model_bidv.json", "r") as json_file:
+    model_json = json_file.read()
+prediction_model_bidv = model_from_json(model_json)
+prediction_model_bidv.load_weights("weights.keras") 
+
 
 # hàm để truy cập: 127.0.0.1/run -> 127.0.0.1 là ip server
 @app.route("/api/captcha/mb", methods=["POST"])
