@@ -130,7 +130,7 @@ def garena():
     preds = loaded_model_vcb.predict(listImage)
     pred_texts = decode_batch_predictions(preds, "vcb")
     captcha = pred_texts[0].replace('[UNK]', '').replace('-', '')
-    response = jsonify(status = "success",data = captcha)
+    response = jsonify(status = "success",captcha = captcha)
 
     return response
 
@@ -157,7 +157,8 @@ def giai():
     preds = prediction_model.predict(listImage)
     pred_texts = decode_batch_predictions_bidv(preds)
     captcha = pred_texts[0].replace('[UNK]', '').replace('-', '')
-    return captcha
+    response = jsonify(status = "success",captcha = captcha)
+    return response
 # Chạy server
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='3000')  # -> chú ý port, không để bị trùng với port chạy cái khác
