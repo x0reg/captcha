@@ -15,7 +15,6 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 from keras.models import model_from_json
-from keras.models import load_model 
 import base64
 import time
 
@@ -25,26 +24,27 @@ app = Flask(__name__)
 # Apply Flask CORS
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+###
+characters = ['2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'E', 'G', 'J', 'K', 'P', 'S', 'U', 'V', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z']
+batch_size_bidv = 16
+img_width_bidv = 200
+img_height_bidv = 50  
+max_length_bidv = 5 
+char_to_num = layers.StringLookup(vocabulary=list(characters), mask_token=None) 
+num_to_char = layers.StringLookup(
+    vocabulary=char_to_num.get_vocabulary(), mask_token=None, invert=True
+) 
+with open("model_bidv.json", "r") as json_file:
+    model_json = json_file.read()
+prediction_model = model_from_json(model_json)
+prediction_model.load_weights("weights.keras")  
 
+##
 characters_mb = ['K', 'M', 'C', 'e', 'g', 'k', 'u', 'z', 't', '3', 'U', 'a', '5', 'A', 'y', 'H', 'q', 'Z', 'V', '7', 'Q', '2', '4', 'Y', '-', 'h', '8', 'v', '6', 'd', 'b', 'n', 'p', 'P', 'E', 'c', 'm', 'D', 'B', '9', 'N', 'G']
 
 characters_vcb = ['9', '-', '7', '8', '4', '1', '5', '6', '2', '3']
 img_width = 320
 img_height = 80
-
-#BIDV
-characters_bidv = ['2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'E', 'G', 'J', 'K', 'P', 'S', 'U', 'V', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'y', 'z']
-batch_size = 16
-img_width = 200
-img_height = 50  
-max_length = 5 
-char_to_num_bidv = layers.StringLookup(vocabulary=list(characters_bidv), mask_token=None) 
-num_to_char_bidv = layers.StringLookup(
-    vocabulary=char_to_num_bidv.get_vocabulary(), mask_token=None, invert=True
-) 
-
-#end BIDV
-
 
 # Số lượng tối đa trong captcha ( dài nhất là 6)
 max_length = 15
@@ -64,6 +64,13 @@ def encode_base64x(base64):
     img = tf.transpose(img, perm=[1, 0, 2])
     return {"image": img}
 
+def encode_base64xB(base64):
+    img = tf.io.decode_base64(base64)
+    img = tf.io.decode_png(img, channels=1)
+    img = tf.image.convert_image_dtype(img, tf.float32)
+    img = tf.image.resize(img, [img_height_bidv, img_width_bidv])
+    img = tf.transpose(img, perm=[1, 0, 2])
+    return {"image": img}
 # Dịch từ mã máy thành chữ
 def decode_batch_predictions(pred, type):
     def num_to_char(res, type):
@@ -71,8 +78,6 @@ def decode_batch_predictions(pred, type):
             return tf.strings.reduce_join(num_to_char_vcb(res)).numpy().decode("utf-8")
         elif type == "mb":
             return tf.strings.reduce_join(num_to_char_mb(res)).numpy().decode("utf-8")
-        elif type == "bidv":
-            return tf.strings.reduce_join(num_to_char_bidv(res)).numpy().decode("utf-8")  
         else:
             raise ValueError("Invalid type. Supported types are 'vcb' and 'mb'.")
 
@@ -97,12 +102,6 @@ loaded_model_json = json_file_mb.read()
 json_file_mb.close()
 loaded_model_mb = model_from_json(loaded_model_json)
 loaded_model_mb.load_weights("model_mb.h5")
-#load mode bidv 
-with open("model_bidv.json", "r") as json_file:
-    model_json = json_file.read()
-prediction_model_bidv = model_from_json(model_json)
-prediction_model_bidv.load_weights("weights.keras") 
-
 
 # hàm để truy cập: 127.0.0.1/run -> 127.0.0.1 là ip server
 @app.route("/api/captcha/mb", methods=["POST"])
@@ -122,7 +121,7 @@ def mb():
 
 @app.route("/api/captcha/vcb", methods=["POST"])
 @cross_origin(origin='*')
-def vietcombank():
+def garena():
     content = request.json
     start_time = time.time()
     imgstring = content['imgbase64']
@@ -131,21 +130,34 @@ def vietcombank():
     preds = loaded_model_vcb.predict(listImage)
     pred_texts = decode_batch_predictions(preds, "vcb")
     captcha = pred_texts[0].replace('[UNK]', '').replace('-', '')
-    response = jsonify(status = "success",captcha = captcha)
+    response = jsonify(status = "success",data = captcha)
+
     return response
-    
-@app.route("/api/captcha/bidv", methods=["POST"])
+
+
+###
+def decode_batch_predictions_bidv(pred): 
+    input_len = np.ones(pred.shape[0]) * pred.shape[1] 
+    results = keras.backend.ctc_decode(pred, input_length=input_len, greedy=True)[0][0][
+        :, :max_length_bidv
+    ] 
+    output_text = []
+    for res in results:
+        res = tf.strings.reduce_join(num_to_char(res)).numpy().decode("utf-8")
+        output_text.append(res)
+    return output_text
+
+@app.route("/api/captcha", methods=["POST"])
 @cross_origin(origin='*')
-def giaibidv():
+def giai():
     content = request.json 
     imgstring = content['imgbase64']
-    image_encode = encode_base64x(imgstring.replace("+", "-").replace("/", "_"))["image"]
+    image_encode = encode_base64xB(imgstring.replace("+", "-").replace("/", "_"))["image"]
     listImage = np.array([image_encode])
-    preds = prediction_model_bidv.predict(listImage)
-    pred_texts = decode_batch_predictions(preds,"bidv")
+    preds = prediction_model.predict(listImage)
+    pred_texts = decode_batch_predictions_bidv(preds)
     captcha = pred_texts[0].replace('[UNK]', '').replace('-', '')
-    response = jsonify(status = "success",captcha = captcha)
-    return response
+    return captcha
 # Chạy server
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='3030')  # -> chú ý port, không để bị trùng với port chạy cái khác
+    app.run(host='0.0.0.0', port='3000')  # -> chú ý port, không để bị trùng với port chạy cái khác
