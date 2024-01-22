@@ -147,7 +147,7 @@ def decode_batch_predictions_bidv(pred):
         output_text.append(res)
     return output_text
 
-@app.route("/api/captcha", methods=["POST"])
+@app.route("/api/captcha/bidv", methods=["POST"])
 @cross_origin(origin='*')
 def giai():
     content = request.json 
