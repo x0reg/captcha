@@ -37,7 +37,19 @@ pip install numpy
 pip install matplotlib
 # Chạy file
 nohup python3 run.py &
+# pm2 setup
+sudo apt update && sudo apt upgrade -y
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo apt install -y nodejs
+node -v
+npm -v
+sudo npm install -g pm2
+pm2 -v
 
+pm2 startup
+Lệnh trên sẽ hiển thị một dòng lệnh khác để bạn chạy (có dạng sudo ...). Hãy sao chép và chạy lệnh đó.
+pm2 save
+pm2 start run.py --interpreter python3 --name my-python-captcha
 # Cách tắt server
 # tìm process đang chạy ẩn -> tìm pid -> tắt chạy
 ps -ef |grep nohup 
